@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Пантелеймон Куріленко — Архітектурні креслення та цифрові рішення</title>
+  <meta name="description" content="Розробка робочих креслень, оцифровка просторів, параметричні розрахунки та автоматизація медіа.">
+  
+  <!-- Вбудована SVG-іконка без зовнішніх файлів -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23141416%22/><path d=%22M25 75 L75 75 L75 25 Z%22 fill=%22none%22 stroke=%22%23e5e5ea%22 stroke-width=%226%22/><line x1=%2225%22 y1=%2275%22 x2=%2275%22 y2=%2225%22 stroke=%22%2338bdf8%22 stroke-width=%226%22/></svg>">
+
+  <style>
+    :root {
+      --bg-base: #0b0b0c;
+      --bg-surface: #141417;
+      --bg-elevated: #1e1e24;
+      --border-subtle: #27272f;
+      --border-focus: #38bdf8;
+      --text-primary: #f4f4f6;
+      --text-secondary: #a1a1aa;
+      --text-muted: #63636e;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --btn-bg: #f4f4f6;
+      --btn-text: #0b0b0c;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "Cascadia Code", "Consolas", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 28px 18px calc(110px + env(safe-area-inset-bottom));
+      max-width: 640px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- ЕКРАН 1: СЕНС І ПОЗИЦІЮВАННЯ (Зона очей) --- */
+    header {
+      margin-bottom: 32px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(24px, 6vw, 32px);
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* --- ПЕРЕМИКАЧ НАПРЯМКІВ --- */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn.active {
+      background: var(--text-primary);
+      color: var(--bg-base);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* --- ЕКРАН 2: ДОКАЗ КОМПЕТЕНТНОСТІ (Кейси) --- */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .cases-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .case-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .case-visual {
+      width: 100%;
+      height: 170px;
+      background: #101014;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .case-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(11, 11, 12, 0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .case-body {
+      padding: 16px;
+    }
+
+    .case-body h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .case-body p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tech-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* --- ЕКРАН 3: ШВИДКИЙ КОНСТРУКТОР ЗАДАЧІ (Під великий палець) --- */
+    .task-builder {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px;
+      margin-bottom: 24px;
+    }
+
+    .task-builder h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .task-builder p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .task-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    .task-item.selected {
+      border-color: var(--border-focus);
+      background: var(--accent-soft);
+    }
+
+    .task-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.15s ease;
+    }
+
+    .task-item.selected .task-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-base);
+      font-weight: bold;
+    }
+
+    /* --- НИЖНЯ ФІКСОВАНА ПАНЕЛЬ (Thumb Zone) --- */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 18px calc(16px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(11,11,12,0) 0%, rgba(11,11,12,0.92) 30%, #0b0b0c 100%);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+    }
+
+    .bottom-inner {
+      width: 100%;
+      max-width: 604px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .cta-main {
+      flex: 1;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .cta-main:active {
+      transform: scale(0.98);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: calc(85px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-focus);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ВЕРХНЯ ЗОНА: СЕНС -->
+  <header>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span>Київ &bull; Архітектура &bull; Автоматизація</span>
+    </div>
+    <h1>Робочі креслення, оцифровка просторів та медіа-пайплайни.</h1>
+    <p class="lead">Беру на субпідряд рутину: точні пакети документації, переведення обмірів у вектор і 3D-моделі, автоматизація розрахунків та обробки контенту.</p>
+  </header>
+
+  <!-- ФІЛЬТР КАТЕГОРІЙ -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCases('all', this)">Усі рішення</button>
+    <button class="filter-btn" onclick="filterCases('cad', this)">Креслення та 3D</button>
+    <button class="filter-btn" onclick="filterCases('code', this)">Оцифровка & Colab</button>
+    <button class="filter-btn" onclick="filterCases('media', this)">Відео та Графіка</button>
+  </div>
+
+  <!-- СЕРЕДНЯ ЗОНА: КЕЙСИ -->
+  <main>
+    <div class="section-label">Приклади задач і методів</div>
+    
+    <div class="cases-grid" id="cases-container">
+      
+      <!-- Кейс 1 -->
+      <article class="case-card" data-category="cad">
+        <div class="case-visual">
+          <span class="case-tag">LOD 350–400</span>
+          <!-- Вбудована векторна схема плану -->
+          <svg width="220" height="120" viewBox="0 0 220 120" fill="none" stroke="#38bdf8" stroke-width="1.2">
+            <rect x="20" y="15" width="180" height="90" stroke="#a1a1aa" stroke-width="2"/>
+            <line x1="95" y1="15" x2="95" y2="75" stroke="#a1a1aa" stroke-width="1.5"/>
+            <line x1="20" y1="75" x2="65" y2="75" stroke="#a1a1aa" stroke-width="1.5"/>
+            <path d="M65 75 A25 25 0 0 1 90 50" stroke="#38bdf8" stroke-dasharray="3 3"/>
+            <line x1="145" y1="15" x2="145" y2="105" stroke="#a1a1aa" stroke-width="1.5"/>
+            <line x1="20" y1="8" x2="200" y2="8" stroke="#63636e" stroke-width="1"/>
+            <text x="98" y="6" fill="#63636e" font-size="8" font-family="monospace">6 400</text>
+          </svg>
+        </div>
+        <div class="case-body">
+          <h2>Робочі пакети креслень інтер'єру</h2>
+          <p>Обмірочні плани, монтаж/демонтаж, прив'язка електрики, сантехніки та розгортки стін під ключ для дизайнерів і виконробів.</p>
+          <div class="tech-stack">
+            <span class="tech-badge">ArchiCAD</span>
+            <span class="tech-badge">BIM / 3D</span>
+            <span class="tech-badge">PDF / DWG</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Кейс 2 -->
+      <article class="case-card" data-category="code">
+        <div class="case-visual">
+          <span class="case-tag">Автоматизація</span>
+          <svg width="220" height="120" viewBox="0 0 220 120" fill="none">
+            <polygon points="110,20 170,50 110,80 50,50" stroke="#38bdf8" stroke-width="1.5" fill="rgba(56,189,248,0.05)"/>
+            <polygon points="110,40 170,70 110,100 50,70" stroke="#63636e" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="50" y1="50" x2="50" y2="70" stroke="#a1a1aa" stroke-width="1.2"/>
+            <line x1="110" y1="80" x2="110" y2="100" stroke="#a1a1aa" stroke-width="1.2"/>
+            <line x1="170" y1="50" x2="170" y2="70" stroke="#a1a1aa" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="case-body">
+          <h2>Оцифровка обмірів та параметричні скрипти</h2>
+          <p>Швидке переведення сканів, БТІ чи ручних ескізів у чистий векторний формат (SVG/DXF), таблиці площ і просторові сітки.</p>
+          <div class="tech-stack">
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">Google Colab</span>
+            <span class="tech-badge">Geometry / DXF</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Кейс 3 -->
+      <article class="case-card" data-category="media">
+        <div class="case-visual">
+          <span class="case-tag">Медіа & Візуал</span>
+          <svg width="220" height="120" viewBox="0 0 220 120" fill="none">
+            <rect x="35" y="25" width="150" height="70" rx="6" stroke="#a1a1aa" stroke-width="1.5"/>
+            <line x1="35" y1="75" x2="185" y2="75" stroke="#27272f" stroke-width="1"/>
+            <rect x="45" y="82" width="50" height="6" rx="2" fill="#38bdf8"/>
+            <rect x="100" y="82" width="35" height="6" rx="2" fill="#63636e"/>
+            <polygon points="103,42 103,62 121,52" fill="#f4f4f6"/>
+          </svg>
+        </div>
+        <div class="case-body">
+          <h2>Пакетна обробка відео, аудіо та графіки</h2>
+          <p>Хмарний рендеринг, автоматична нарізка, оптимізація медіафайлів, субтитрування та підготовка візуальних матеріалів.</p>
+          <div class="tech-stack">
+            <span class="tech-badge">FFmpeg</span>
+            <span class="tech-badge">Colab Cloud</span>
+            <span class="tech-badge">Illustrator / PS</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ІНТЕРАКТИВНИЙ ВИБІР ЗАДАЧІ -->
+    <section class="task-builder">
+      <h3>Що потрібно зробити?</h3>
+      <p>Відмітьте потрібні пункти — вони автоматично скопіюються для швидкого повідомлення:</p>
+      
+      <div class="task-options">
+        <div class="task-item" onclick="toggleTask(this, 'Оцифровка обмірів / переведення в креслення')">
+          <span class="task-title">1. Оцифровка обмірів (з ескізу / PDF)</span>
+          <span class="task-check">✓</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'Робочий пакет креслень (планування, електрика, розгортки)')">
+          <span class="task-title">2. Робочий пакет креслень на субпідряд</span>
+          <span class="task-check">✓</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, '3D-моделювання простору / меблевих вузлів')">
+          <span class="task-title">3. 3D-модель простору або конструктиву</span>
+          <span class="task-check">✓</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'Обробка відео / графіка / автоматизація через скрипти')">
+          <span class="task-title">4. Обробка медіа або автоматизація (Colab)</span>
+          <span class="task-check">✓</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">ТЗ скопійовано в буфер обміну</div>
+
+  <!-- НИЖНЯ ЗОНА ВЕЛИКОГО ПАЛЬЦЯ (Єдина головна дія) -->
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <button class="cta-main" id="main-cta" onclick="handleContact()">
+        <span id="cta-text">Написати в Telegram</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Заміни на свій актуальний юзернейм у Telegram
+    const TELEGRAM_USERNAME = "panteleimon_k"; 
+    const selectedTasks = new Set();
+
+    function filterCases(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.case-card').forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function toggleTask(el, taskName) {
+      if (selectedTasks.has(taskName)) {
+        selectedTasks.delete(taskName);
+        el.classList.remove('selected');
+      } else {
+        selectedTasks.add(taskName);
+        el.classList.add('selected');
+      }
+
+      const ctaText = document.getElementById('cta-text');
+      if (selectedTasks.size > 0) {
+        ctaText.innerText = `Скопіювати ТЗ (${selectedTasks.size}) і написати →`;
+      } else {
+        ctaText.innerText = 'Написати в Telegram';
+      }
+    }
+
+    function handleContact() {
+      let message = "Вітаю, Пантелеймоне! Цікавить співпраця.";
+      
+      if (selectedTasks.size > 0) {
+        const list = Array.from(selectedTasks).map(t => `• ${t}`).join('\n');
+        message = `Вітаю, Пантелеймоне! Потрібна допомога з такими задачами:\n${list}`;
+        
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(message);
+          const toast = document.getElementById('toast');
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 2200);
+        }
+      }
+
+      const encoded = encodeURIComponent(message);
+      setTimeout(() => {
+        window.open(`https://t.me/${TELEGRAM_USERNAME}?text=${encoded}`, '_blank');
+      }, selectedTasks.size > 0 ? 450 : 0);
+    }
+
+    // Очищення URL від трекерів соцмереж (fbclid, utm)
+    if (window.location.search.indexOf('fbclid') > -1 || window.location.search.indexOf('utm') > -1) {
+      const cleanUri = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUri);
+    }
+  </script>
+
+</body>
+</html>
